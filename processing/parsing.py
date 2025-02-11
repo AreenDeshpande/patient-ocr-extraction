@@ -25,3 +25,19 @@ def parse_text(text):
             parsed_data["diagnosis"]=line.split("Diagnosis:")[-1].strip()
 
     return parsed_data
+
+def store_in_db(data,db_name="patient_data.db"):
+    conn=sqlite3.connect(db_name)
+    cursor=conn.cursor()
+
+    cursor.execute(''' CREATE TABLE IF NOT EXISTS patient_info(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   patient_name TEXT,
+                   age TEXT,
+                   diagnosis TEXT)''')
+    
+    cursor.execute('''
+                   INSERT INTO patient_info(patient_name,age,diagnosis)
+                     VALUES(?,?,?)''',(data["patient_name"],data["age"],data["diagnosis"]))
+    conn.commit
+    conn.close()

@@ -10,19 +10,19 @@ from PIL import Image
 read = easyocr.Reader(['en'])
 
 #preprocessing
-def preprocess_image(image_path):
-    image=cv2.imread(image_path ,cv2.IMREAD_GRAYSCALE)
-    image=cv2.GaussianBlur(image,(5,5),0)
-    image=cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-    return image
+def preprocess_image(image):
+    gray=cv2.cvtColor(image, cv2.COLOR_RGB2GRAY) 
+    blur=cv2.GaussianBlur(gray,(5,5),0)
+    img=cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+    return img
 #ocr extraction function
-def extract_text_jpg(image_path):
-    preprocessed_image=preprocess_image(image_path)
+def extract_text_jpg(image):
+    preprocessed_image=preprocess_image(image)
     text=read.readtext(preprocessed_image,detail=0)
     return " ".join(text)
 
-def extract_text_pdf(pdf_path):
-    image=convert_from_path(pdf_path)
+def extract_text_pdf(pdf_file):
+    image=convert_from_path(pdf_file)
     extracted_text=[]
     for img in image:
         img=np.array(img)
